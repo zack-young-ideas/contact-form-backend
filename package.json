@@ -9,7 +9,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/app.js",
-    "test": "jest"
+    "test": "jest --watch"
   },
   "dependencies": {
     "express": "^5.1.0"
