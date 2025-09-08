@@ -2,11 +2,14 @@ import request from 'supertest';
 
 import app from './app';
 
-describe('/contact', () => {
-  it('should return text', async () => {
-    const response = await request(app).get('/contact');
+describe('/csrf', () => {
+  it('should return CSRF token', async () => {
+    const response = await request(app).get('/csrf');
 
     expect(response.statusCode).toBe(200);
-    expect(response.body).toMatchObject({ message: 'Cool' });
+
+    const headers = response.headers;
+
+    expect(headers['x-csrf-token']).toMatch(/^.{32}$/);
   });
 });
