@@ -2,7 +2,7 @@ import request from 'supertest';
 
 import app from './app';
 
-describe('/csrf', () => {
+describe('/csrf GET', () => {
   it('should return 200 OK response', async () => {
     const response = await request(app).get('/csrf');
 
@@ -22,5 +22,36 @@ describe('/csrf', () => {
 
     expect(setCookieHeader).toBeDefined();
     expect(setCookieHeader[0]).toMatch(/^csrftoken=[a-zA-Z0-9]{32}; Path=\//);
+  });
+});
+
+describe('/contact POST', () => {
+  it('should return 200 OK response', async () => {
+    const response = await request(app).post('/contact').send({
+      firstName: 'John',
+      lastName: 'Smith',
+      email: 'jsmith@example.com',
+      phone: '+12345678901',
+      message: 'Hello',
+    });
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('requires firstName, lastName, and email', async () => {
+    const response = await request(app).post('/contact').send({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '+12345678901',
+      message: 'Hello',
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty('errors', [
+      'Invalid first name',
+      'Invalid last name',
+      'Invalid email address',
+    ]);
   });
 });
