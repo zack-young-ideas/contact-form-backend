@@ -13,5 +13,17 @@ describe('ContactForm', () => {
 
       expect(form.isValid()).toBe(true);
     });
+
+    it('should return false if data is invalid', () => {
+      const form = new ContactForm({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '+12345678901',
+        message: 'Hello',
+      });
+
+      expect(form.isValid()).toBe(false);
+    });
   });
 });

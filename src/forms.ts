@@ -1,5 +1,13 @@
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  message: string;
+}
+
 class ContactForm {
-  constructor(args) {
+  constructor(args: FormData) {
     this.firstName = args.firstName;
     this.lastName = args.lastName;
     this.email = args.email;
