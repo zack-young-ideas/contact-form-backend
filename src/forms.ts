@@ -31,7 +31,7 @@ class ContactForm {
     if (!this.email || !validator.isEmail(this.email)) {
       this.errors.push('Invalid email address');
     }
-    if (!validator.isMobilePhone(this.phone)) {
+    if (this.phone && !validator.isMobilePhone(this.phone)) {
       this.errors.push('Invalid phone number');
     }
     if (this.errors.length === 0) {
