@@ -2,7 +2,7 @@
 Defines utility functions.
 */
 
-const crypto = require('node:crypto');
+import crypto from 'node:crypto';
 
 let ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 ALPHABET += '0123456789';
