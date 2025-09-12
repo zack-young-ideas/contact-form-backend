@@ -5,6 +5,8 @@ const app = express();
 
 app.use(express.json());
 
+app.disable('x-powered-by');
+
 app.get('/csrf', getHandler);
 
 app.post('/contact', postHandler);
