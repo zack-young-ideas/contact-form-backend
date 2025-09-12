@@ -1,3 +1,5 @@
+import validator from 'validator';
+
 interface FormData {
   firstName: string;
   lastName: string;
@@ -18,14 +20,17 @@ class ContactForm {
 
   isValid() {
     let output = false;
-    if (!this.firstName) {
+    if (!this.firstName || !validator.isAlpha(this.firstName)) {
       this.errors.push('Invalid first name');
     }
-    if (!this.lastName) {
+    if (!this.lastName || !validator.isAlpha(this.lastName)) {
       this.errors.push('Invalid last name');
     }
-    if (!this.email) {
+    if (!this.email || !validator.isEmail(this.email)) {
       this.errors.push('Invalid email address');
+    }
+    if (!validator.isMobilePhone(this.phone)) {
+      this.errors.push('Invalid phone number');
     }
     if (this.errors.length === 0) {
       output = true;
