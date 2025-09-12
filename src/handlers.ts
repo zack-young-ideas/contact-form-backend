@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import database from './database.ts';
+import mail from './mail.ts';
 import { getRandomString, maskCipherToken } from './utils.ts';
 import ContactForm from './forms.ts';
 
@@ -22,8 +23,17 @@ const postHandler = async (req: Request, res: Response) => {
   } else {
     try {
       await database.createContact(form);
+      await mail.sendMail({
+        template: 'contactForm.html',
+        variables: {
+          title: 'Thank You!',
+          content: ('Thank you for reaching out to us. '
+                    + 'A member of our team will contact you shortly.'),
+        },
+      });
+      await mail.contactAdmin({ content: '' });
     } catch {
-      status = 400;
+      status = 500;
       responseData.errors = ['Unable to connect to database'];
     }
   }
