@@ -1,4 +1,5 @@
 import validator from 'validator';
+import xss from 'xss';
 
 interface FormData {
   firstName: string;
@@ -16,6 +17,7 @@ class ContactForm {
     this.phone = args.phone;
     this.message = args.message;
     this.errors = [];
+    this.validation = false;
   }
 
   isValid() {
@@ -35,7 +37,23 @@ class ContactForm {
     if (this.errors.length === 0) {
       output = true;
     }
+    this.validation = true;
     return output;
+  }
+
+  get cleanedData() {
+    if (!this.validation) {
+      throw new Error('Data unavailable');
+    } else {
+      const output = {
+        firstName: xss(this.firstName),
+        lastName: xss(this.lastName),
+        email: xss(this.email),
+        phone: xss(this.phone),
+        message: xss(this.message),
+      }
+      return output;
+    }
   }
 }
 
