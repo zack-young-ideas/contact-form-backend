@@ -8,9 +8,9 @@ jest.mock('xss', () => jest.fn());
 beforeEach(() => {
   jest.clearAllMocks();
 
-  validator.isAlpha = jest.fn((input) => true);
-  validator.isEmail = jest.fn((input) => true);
-  validator.isMobilePhone = jest.fn((input) => true);
+  validator.isAlpha = jest.fn(() => true);
+  validator.isEmail = jest.fn(() => true);
+  validator.isMobilePhone = jest.fn(() => true);
 
   xss = xss.mockImplementation((input) => input);
 });
@@ -101,7 +101,7 @@ describe('ContactForm', () => {
 
   describe('cleanedData', () => {
     it('contains sanitized data', () => {
-      let form = new ContactForm({
+      const form = new ContactForm({
         firstName: 'John',
         lastName: 'Smith',
         email: 'jsmith@example.com',
@@ -120,7 +120,7 @@ describe('ContactForm', () => {
     });
 
     it('throws error if isValid() method is not called first', () => {
-      let form = new ContactForm({
+      const form = new ContactForm({
         firstName: 'John',
         lastName: 'Smith',
         email: 'jsmith@example.com',
@@ -134,7 +134,7 @@ describe('ContactForm', () => {
     it('calls xss on each input', () => {
       expect(xss).toHaveBeenCalledTimes(0);
 
-      let form = new ContactForm({
+      const form = new ContactForm({
         firstName: 'John',
         lastName: 'Smith',
         email: 'jsmith@example.com',
@@ -142,6 +142,7 @@ describe('ContactForm', () => {
         message: 'Hello',
       });
       form.isValid();
+      // eslint-disable-next-line
       form.cleanedData;
 
       expect(xss).toHaveBeenCalledTimes(5);

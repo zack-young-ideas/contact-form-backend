@@ -28,13 +28,13 @@ const maskCipherToken = (secret) => {
   const mask = getRandomString();
   const pairs = [];
   for (let i=0; i < secret.length; i++) {
-    let secretIndex = ALPHABET.indexOf(secret[i]);
-    let maskIndex = ALPHABET.indexOf(mask[i]);
+    const secretIndex = ALPHABET.indexOf(secret[i]);
+    const maskIndex = ALPHABET.indexOf(mask[i]);
     pairs.push([secretIndex, maskIndex]);
   }
   const sums = [];
   for (let j=0; j < pairs.length; j++) {
-    let pair = pairs[j];
+    const pair = pairs[j];
     sums.push(ALPHABET[(pair[0] + pair[1]) % ALPHABET.length]);
   }
   const cipher = sums.join('');

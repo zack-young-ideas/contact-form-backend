@@ -1,6 +1,7 @@
 import { postHandler } from './handlers.ts';
 import database from './database.ts';
 import mail from './mail.ts';
+// eslint-disable-next-line
 import ContactForm from './forms.ts';
 
 jest.mock('./database.ts');
