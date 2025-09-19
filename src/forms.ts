@@ -10,6 +10,14 @@ interface FormData {
 }
 
 class ContactForm {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  message: string;
+  errors: Array<string>;
+  validation: boolean;
+
   constructor(args: FormData) {
     this.firstName = args.firstName;
     this.lastName = args.lastName;

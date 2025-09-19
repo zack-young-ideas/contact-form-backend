@@ -8,12 +8,12 @@ let ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 ALPHABET += '0123456789';
 
 
-const getRandomString = (string_length = 32) => {
+const getRandomString = (string_length: number = 32) => {
   /*
   Generates a random string of characters.
   */
-  let output = '';
-  let index = 0;
+  let output: string = '';
+  let index: number = 0;
   while (index < string_length) {
     output += ALPHABET[crypto.randomInt(ALPHABET.length)];
     index++;
@@ -21,44 +21,71 @@ const getRandomString = (string_length = 32) => {
   return output;
 }
 
-const maskCipherToken = (secret) => {
+const maskCipherToken = (secret: string) => {
   /*
   Given a secret, generates a token using a mask.
   */
-  const mask = getRandomString();
-  const pairs = [];
-  for (let i=0; i < secret.length; i++) {
-    const secretIndex = ALPHABET.indexOf(secret[i]);
-    const maskIndex = ALPHABET.indexOf(mask[i]);
-    pairs.push([secretIndex, maskIndex]);
+  const mask: string = getRandomString();
+  const pairs: number[][] = [];
+  for (let index = 0; index < secret.length; index++) {
+    const secretItem: string | undefined = secret[index];
+    const maskItem: string | undefined = mask[index];
+    if ((secretItem !== undefined) && (maskItem !== undefined)) {
+      const secretIndex: number = ALPHABET.indexOf(secretItem);
+      const maskIndex: number = ALPHABET.indexOf(maskItem);
+      pairs.push([secretIndex, maskIndex]);
+    }
   }
   const sums = [];
-  for (let j=0; j < pairs.length; j++) {
-    const pair = pairs[j];
-    sums.push(ALPHABET[(pair[0] + pair[1]) % ALPHABET.length]);
+  for (let index = 0; index < pairs.length; index++) {
+    const pair: Array<number> | undefined = pairs[index];
+    if (pair !== undefined) {
+      const firstItem: number | undefined = pair[0];
+      const secondItem: number | undefined = pair[1];
+      if ((firstItem !== undefined) && (secondItem !== undefined)) {
+        sums.push(ALPHABET[(firstItem + secondItem) % ALPHABET.length]);
+      }
+    }
   }
   const cipher = sums.join('');
   return mask + cipher;
 }
 
-const unmaskCipherToken = (inputToken) => {
+const unmaskCipherToken = (inputToken: string) => {
   /*
   Given a token, determines the secret by removing the mask.
   */
-  const mask = inputToken.slice(0, 32);
-  const token = inputToken.slice(32);
-  const pairs = [];
-  for (let i=0; i < token.length; i++) {
-    pairs.push([ALPHABET.indexOf(token[i]), ALPHABET.indexOf(mask[i])]);
-  }
-  const secretArray = [];
-  for (let j=0; j < pairs.length; j++) {
-    let difference = pairs[j][0] - pairs[j][1];
-    if (difference < 0) {
-      difference = ALPHABET.length + difference;
+
+  const mask: string = inputToken.slice(0, 32);
+  const token: string = inputToken.slice(32);
+
+  const pairs: number[][] = [];
+  for (let index = 0; index < token.length; index++) {
+    const maskItem: string | undefined = mask[index];
+    const tokenItem: string | undefined = token[index];
+    if ((maskItem !== undefined) && (tokenItem !== undefined)) {
+      pairs.push(
+        [ALPHABET.indexOf(tokenItem), ALPHABET.indexOf(maskItem)]
+      );
     }
-    secretArray.push(ALPHABET[difference]);
   }
+
+  const secretArray: Array<string> = [];
+  pairs.forEach((item) => {
+    const firstItem: number | undefined = item[0];
+    const secondItem: number | undefined = item[1];
+    if ((firstItem !== undefined) && (secondItem !== undefined)) {
+      let difference: number = firstItem - secondItem;
+      if (difference < 0) {
+        difference = ALPHABET.length + difference;
+      }
+      const letter: string | undefined = ALPHABET[difference];
+      if (letter !== undefined) {
+        secretArray.push(letter);
+      }
+    }
+  });
+
   return secretArray.join('');
 }
 

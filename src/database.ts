@@ -1,5 +1,7 @@
+import ContactForm from './forms';
+
 const database = {
-  createContact: (formObject) => {
+  createContact: (formObject: ContactForm) => {
     return;
   }
 };
