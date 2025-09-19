@@ -25,8 +25,10 @@ const maskCipherToken = (secret: string) => {
   /*
   Given a secret, generates a token using a mask.
   */
+
   const mask: string = getRandomString();
   const pairs: number[][] = [];
+
   for (let index = 0; index < secret.length; index++) {
     const secretItem: string | undefined = secret[index];
     const maskItem: string | undefined = mask[index];
@@ -36,6 +38,7 @@ const maskCipherToken = (secret: string) => {
       pairs.push([secretIndex, maskIndex]);
     }
   }
+
   const sums = [];
   for (let index = 0; index < pairs.length; index++) {
     const pair: Array<number> | undefined = pairs[index];
