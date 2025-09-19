@@ -1,9 +1,21 @@
+interface MailObject {
+  template: string;
+  variables: {
+    title: string;
+    content: string;
+  }
+}
+
+interface AdminMailObject {
+  content: string;
+}
+
 const mail = {
-  sendMail: (mailObject) => {
+  sendMail: (mailObject: MailObject) => {
     return;
   },
 
-  contactAdmin: (mailObject) => {
+  contactAdmin: (mailObject: AdminMailObject) => {
     return;
   },
 };

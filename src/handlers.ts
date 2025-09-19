@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 
-import database from './database.ts';
-import mail from './mail.ts';
-import { getRandomString, maskCipherToken } from './utils.ts';
-import ContactForm from './forms.ts';
+import database from './database';
+import mail from './mail';
+import { getRandomString, maskCipherToken } from './utils';
+import ContactForm from './forms';
 
 const getHandler = async (req: Request, res: Response) => {
   const csrfSecret = getRandomString();
@@ -12,11 +12,15 @@ const getHandler = async (req: Request, res: Response) => {
   res.json({});
 }
 
+interface ResponseData {
+  errors?: Array<string>;
+}
+
 const postHandler = async (req: Request, res: Response) => {
   const data = req.body;
-  const responseData = {};
-  let status = 200;
-  const form = new ContactForm(data);
+  const responseData: ResponseData = {};
+  let status: number = 200;
+  const form: ContactForm = new ContactForm(data);
   if (!form.isValid()) {
     responseData.errors = form.errors;
     status = 400;
