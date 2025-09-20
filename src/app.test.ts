@@ -1,6 +1,9 @@
 import request from 'supertest';
 
 import app from './app';
+import database from './database';
+
+jest.mock('./database');
 
 describe('/csrf GET', () => {
   it('should return 200 OK response', async () => {

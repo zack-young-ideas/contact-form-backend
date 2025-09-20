@@ -1,12 +1,12 @@
-import { postHandler } from './handlers.ts';
-import database from './database.ts';
-import mail from './mail.ts';
+import { postHandler } from './handlers';
+import database from './database';
+import mail from './mail';
 // eslint-disable-next-line
-import ContactForm from './forms.ts';
+import ContactForm from './forms';
 
-jest.mock('./database.ts');
-jest.mock('./forms.ts');
-jest.mock('./mail.ts');
+jest.mock('./database');
+jest.mock('./forms');
+jest.mock('./mail');
 
 afterEach(() => jest.resetAllMocks());
 

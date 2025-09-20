@@ -10,8 +10,7 @@ if (argument !== undefined) {
   if (!argument.startsWith('--env=')) {
     throw Error(`Unknown command line argument: ${argument}`);
   } else {
-    const envFile: string = argument.slice(6);
-    envPath = path.resolve(process.cwd(), envFile);
+    envPath = argument.slice(6);
     if (!fs.existsSync(envPath)) {
       throw Error(`File ${envPath} does not exist`);
     }
