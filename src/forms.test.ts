@@ -1,6 +1,6 @@
 import validator from 'validator';
 import xss from 'xss';
-import ContactForm from './forms.ts';
+import ContactForm from './forms';
 
 jest.mock('validator');
 jest.mock('xss', () => jest.fn());

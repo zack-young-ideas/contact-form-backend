@@ -1,4 +1,4 @@
-import { getConnection, validateConnParams } from './database.ts';
+import { getConnection, validateConnParams } from './database';
 import mysql from 'mysql2';
 
 jest.mock('mysql2', () => ({

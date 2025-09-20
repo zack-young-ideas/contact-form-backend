@@ -49,8 +49,36 @@ const getConnection = async () => {
 
 const database = {
 
-  createContact: (formObject: ContactForm) => {
-    return;
+  createContact: async (formObject: ContactForm) => {
+    try {
+      const conn = await getConnection();
+      let variables = 'first_name, last_name, email'
+      let params = '?, ?, ?';
+      const values = [
+        formObject.firstName, 
+        formObject.lastName, 
+        formObject.email
+      ];
+      if (formObject.phone !== undefined) {
+        variables += ', phone';
+        params += ', ?';
+        values.push(formObject.phone);
+      }
+      if (formObject.message !== undefined) {
+        variables += ', message';
+        params += ', ?';
+        values.push(formObject.message);
+      }
+      const insertString = 'INSERT INTO contact_form_submissions '
+                         + `(${variables}) VALUES (${params});`;
+      await conn.execute(insertString, values);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error('An unknown error occurred');
+      }
+    }
   },
 
   migrate: async () => {

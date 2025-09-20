@@ -2,7 +2,7 @@ import {
   getRandomString,
   maskCipherToken,
   unmaskCipherToken
-} from './utils.ts';
+} from './utils';
 
 describe('getRandomString', () => {
   it('should return random string of characters', () => {
