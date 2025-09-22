@@ -58,3 +58,12 @@ describe('/contact POST', () => {
     ]);
   });
 });
+
+describe('default 404 response', () => {
+  it('should be returned when unknown resource is requested', async () => {
+    const response = await request(app).get('/unknown');
+
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toHaveProperty('message', 'Not found');
+  });
+});

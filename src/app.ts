@@ -11,4 +11,12 @@ app.get('/csrf', getHandler);
 
 app.post('/contact', postHandler);
 
+app.use((req, res) => {
+  res.status(404).json({ message: 'Not found' });
+});
+
+app.use((req, res) => {
+  res.status(500).json({ message: 'Internal server error' });
+});
+
 export default app;
