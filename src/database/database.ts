@@ -1,5 +1,5 @@
 import mysql, { ConnectionOptions } from 'mysql2';
-import ContactForm from './forms';
+import ContactForm from '../forms';
 
 const getConnection = async () => {
   /*

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 
-import database from './database';
-import mail from './mail';
-import { getRandomString, maskCipherToken } from './utils';
-import ContactForm from './forms';
+import database from '../database';
+import mail from '../mail';
+import { getRandomString, maskCipherToken } from '../utils';
+import ContactForm from '../forms';
 
 const getHandler = async (req: Request, res: Response) => {
   const csrfSecret = getRandomString();
