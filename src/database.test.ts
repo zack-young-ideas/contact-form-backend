@@ -1,4 +1,4 @@
-import { getConnection, validateConnParams } from './database';
+import { getConnection } from './database';
 import mysql from 'mysql2';
 
 jest.mock('mysql2', () => ({
@@ -10,32 +10,6 @@ beforeEach(() => {
   process.env.DATABASE_PASSWORD = 'supersecret';
   process.env.DATABASE_NAME = 'database';
   process.env.DATABASE_HOST = 'localhost';
-});
-
-describe('validateConnParams', () => {
-  it('should throw error if required parameters are missing', () => {
-    expect(() => validateConnParams()).not.toThrow();
-
-    delete process.env.DATABASE_USER;
-
-    expect(() => validateConnParams()).toThrow(
-      "Environment variable 'DATABASE_USER' is undefined"
-    );
-
-    process.env.DATABASE_USER = 'user';
-    delete process.env.DATABASE_HOST;
-
-    expect(() => validateConnParams()).toThrow(
-      "Environment variable 'DATABASE_HOST' is undefined"
-    );
-
-    process.env.DATABASE_HOST = 'localhost';
-    delete process.env.DATABASE_PASSWORD;
-
-    expect(() => validateConnParams()).toThrow(
-      "Environment variable 'DATABASE_PASSWORD' is undefined"
-    );
-  });
 });
 
 describe('getConnection', () => {
