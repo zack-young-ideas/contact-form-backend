@@ -1,77 +1,17 @@
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
-import {
-  getEnvironment,
-  getRandomString,
-  maskCipherToken,
-  renderTemplate,
-  unmaskCipherToken,
-  validateEnvironment,
-} from './utils';
+import { getEnvironment, validateEnvironment } from './envUtils';
 
 jest.mock('dotenv', () => ({
   config: jest.fn(),
 }));
-jest.mock('fs', () => ({
-  readFile: (filePath, encoding, callback) => {
-    const data = '<!DOCTYPE html>\n'
-               + '<body>\n'
-               + '  <h1>{{ title }}</h1>\n'
-               + '  <p>The quick brown {{ variable1 }} jumps over the '
-               + 'lazy {{ variable2 }}</p>\n'
-               + '</body>\n';
-    callback(null, data);
-  },
-}));
+jest.mock('fs');
 
 beforeEach(() => {
   fs.existsSync = () => true;
 });
 afterEach(() => jest.resetAllMocks());
-
-describe('getRandomString', () => {
-  it('should return random string of characters', () => {
-    const shortString = getRandomString(12);
-    const mediumString = getRandomString(32);
-    const longString = getRandomString(182);
-
-    expect(shortString).toMatch(/^.{12}$/);
-    expect(mediumString).toMatch(/^.{32}$/);
-    expect(longString).toMatch(/^.{182}$/);
-  });
-});
-
-describe('maskCipherSecret', () => {
-  it('should generate token given a secret value', () => {
-    const secret = getRandomString();
-    const token = maskCipherToken(secret);
-    const decryptedValue = unmaskCipherToken(token);
-
-    expect(secret).toBe(decryptedValue);
-  });
-});
-
-describe('renderTemplate', () => {
-  it('should render templates with the given variables', async () => {
-    const actualOutput = await renderTemplate(
-      'template.html',
-      {
-        title: 'Welcome To The Site',
-        variable1: 'fox',
-        variable2: 'dog',
-      }
-    );
-    const expectedOutput = '<!DOCTYPE html>\n'
-                         + '<body>\n'
-                         + '  <h1>Welcome To The Site</h1>\n'
-                         + '  <p>The quick brown fox jumps over the lazy '
-                         + 'dog</p>\n'
-                         + '</body>\n';
-
-    expect(actualOutput).toBe(expectedOutput);
-  });
-});
 
 describe('getEnvironment', () => {
   beforeAll(() => {

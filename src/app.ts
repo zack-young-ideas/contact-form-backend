@@ -1,5 +1,5 @@
 import express from 'express';
-import { getHandler, postHandler } from './handlers';
+import { getHandler, postHandler } from './routes';
 
 const app = express();
 
