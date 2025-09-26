@@ -57,6 +57,7 @@ const validateEnvironment = (command: string = 'build') => {
     // If the command is 'serve', ensure the proper email-related
     // variables are defined.
     requiredVariables.EMAIL_DRIVER = process.env.EMAIL_DRIVER;
+    requiredVariables.EMAIL_TEMPLATE_DIR = process.env.EMAIL_TEMPLATE_DIR;
     requiredVariables.EMAIL_ADMIN_ADDRESS = process.env.EMAIL_ADMIN_ADDRESS;
     const emailVariables: {[index: string]:string | undefined} = {};
     if (requiredVariables.EMAIL_DRIVER === 'local') {

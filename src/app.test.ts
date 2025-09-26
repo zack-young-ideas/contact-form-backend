@@ -2,8 +2,10 @@ import request from 'supertest';
 
 import app from './app';
 import database from './database';
+import { sendAcknowledgementEmail, sendAdminEmail } from '../mail';
 
 jest.mock('./database');
+jest.mock('./mail');
 
 describe('/csrf GET', () => {
   it('should return 200 OK response', async () => {

@@ -1,1 +1,1 @@
-export { default } from './mail';
+export { sendAcknowledgementEmail, sendAdminEmail } from './mail';
