@@ -6,7 +6,11 @@ There are two functions defined in this file:
  - sendLocalEmail saves emails to the local filesystem
 */
 
+import fs from 'fs';
+import path from 'path';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import { MailObject } from './types';
+import { getRandomString } from '../utils';
 
 const sesClient = new SESClient({ region: 'us-east-1' });
 
@@ -37,7 +41,11 @@ const createSendEmailCommand = (toAddress: string, fromAddress: string) => {
   });
 }
 
-const sendAWSEmail = async () => {
+const sendAWSEmail = async (
+  recipient: string,
+  htmlContent: string,
+  textContent: string = '',
+) => {
   /*
   Sends emails using AWS Simple Email Service.
   */
@@ -53,18 +61,38 @@ const sendAWSEmail = async () => {
   }
 }
 
-const sendLocalEmail = async () => {
+const sendLocalEmail = async (
+  recipient: string,
+  htmlContent: string,
+  textContent: string = '',
+) => {
   /*
   Stores emails as files on the local filesystem.
   */
+//  await fs.mkdir(process.env.EMAIL_FILEPATH, { recursive: true }, (err) => {
+//    if (err) {
+//      throw Error('Error creating directory:', err);
+//    }
+//  });
+  const timestamp = Date.now().toString(36);
+  const randomString = getRandomString();
+//  const filename = path.resolve(
+//    process.env.EMAIL_FILEPATH, 
+//    timestamp + randomString
+//  );
+//  await fs.writeFile(filename, 
   return;
 }
 
-const sendEmail = async () => {
+const sendEmail = async (
+  recipient: string,
+  htmlContent: string,
+  textContent: string = '',
+) => {
   if (process.env.EMAIL_DRIVER === 'aws') {
-    sendAWSEmail();
+    await sendAWSEmail(recipient, htmlContent, textContent);
   } else {
-    sendLocalEmail();
+    await sendLocalEmail(recipient, htmlContent, textContent);
   }
 }
 

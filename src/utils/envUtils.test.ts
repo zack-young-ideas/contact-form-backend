@@ -26,6 +26,7 @@ describe('getEnvironment', () => {
     process.env.DATABASE_HOST = 'localhost';
     process.env.EMAIL_DRIVER = 'local';
     process.env.EMAIL_FILEPATH = '/local/file';
+    process.env.EMAIL_TEMPLATE_DIR = 'local/file';
     process.env.EMAIL_ADMIN_ADDRESS = 'admin@example.com';
   });
 
@@ -40,6 +41,7 @@ describe('getEnvironment', () => {
     delete process.env.DATABASE_HOST;
     delete process.env.EMAIL_DRIVER;
     delete process.env.EMAIL_FILEPATH;
+    delete process.env.EMAIL_TEMPLATE_DIR;
     delete process.env.EMAIL_ADMIN_ADDRESS;
   });
 
@@ -96,6 +98,7 @@ describe('validateEnvironment', () => {
     process.env.DATABASE_USER = 'user';
     process.env.EMAIL_DRIVER = 'local';
     process.env.EMAIL_FILEPATH = '/local/file';
+    process.env.EMAIL_TEMPLATE_DIR = '/local/file';
 
     expect(() => validateEnvironment('serve')).toThrow(
       "Environment variable 'EMAIL_ADMIN_ADDRESS' is undefined"
@@ -119,6 +122,7 @@ describe('validateEnvironment', () => {
     process.env.DATABASE_HOST = 'localhost';
     process.env.EMAIL_DRIVER = 'invalid';
     process.env.EMAIL_FILEPATH = '/local/file';
+    process.env.EMAIL_TEMPLATE_DIR = '/local/file';
     process.env.EMAIL_ADMIN_ADDRESS = 'admin@example.com';
 
     expect(() => validateEnvironment('serve')).toThrow(
