@@ -10,7 +10,7 @@ import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 
 const sesClient = new SESClient({ region: 'us-east-1' });
 
-const createSendEmailCommand = (toAddress, fromAddress) => {
+const createSendEmailCommand = (toAddress: string, fromAddress: string) => {
   return new SendEmailCommand({
     Destination: {
       CcAddresses: [],
@@ -37,7 +37,7 @@ const createSendEmailCommand = (toAddress, fromAddress) => {
   });
 }
 
-const sendAWSEmail = () => {
+const sendAWSEmail = async () => {
   /*
   Sends emails using AWS Simple Email Service.
   */
@@ -53,11 +53,19 @@ const sendAWSEmail = () => {
   }
 }
 
-const sendLocalEmail = () => {
+const sendLocalEmail = async () => {
   /*
   Stores emails as files on the local filesystem.
   */
   return;
 }
 
-export { sendAWSEmail, sendLocalEmail };
+const sendEmail = async () => {
+  if (process.env.EMAIL_DRIVER === 'aws') {
+    sendAWSEmail();
+  } else {
+    sendLocalEmail();
+  }
+}
+
+export default sendEmail;

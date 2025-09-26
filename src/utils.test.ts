@@ -26,7 +26,7 @@ jest.mock('fs', () => ({
 }));
 
 beforeEach(() => {
-  fs.existsSync = (filename) => true;
+  fs.existsSync = () => true;
 });
 afterEach(() => jest.resetAllMocks());
 
@@ -89,6 +89,20 @@ describe('getEnvironment', () => {
     process.env.EMAIL_ADMIN_ADDRESS = 'admin@example.com';
   });
 
+  afterAll(() => {
+    /*
+    Delete all environment variables so that no other tests are
+    affected.
+    */
+    delete process.env.DATABASE_USER;
+    delete process.env.DATABASE_PASSWORD;
+    delete process.env.DATABASE_NAME;
+    delete process.env.DATABASE_HOST;
+    delete process.env.EMAIL_DRIVER;
+    delete process.env.EMAIL_FILEPATH;
+    delete process.env.EMAIL_ADMIN_ADDRESS;
+  });
+
   it('should use .env file specified in command-line argument', () => {
     expect(dotenv.config).toHaveBeenCalledTimes(0);
 
@@ -116,10 +130,68 @@ describe('getEnvironment', () => {
   });
 
   it("should throw error if file doesn't exist", () => {
-    fs.existsSync = (filename) => false;
+    fs.existsSync = () => false;
 
     expect(() => getEnvironment('--env=.env')).toThrow(
       'File .env does not exist'
     );
+  });
+});
+
+describe('validateEnvironment', () => {
+  it('should throw error if required environment variable is missing', () => {
+    process.env.DATABASE_USER = 'user';
+    process.env.DATABASE_PASSWORD = 'supersecret';
+    process.env.DATABASE_NAME = 'database';
+    process.env.DATABASE_HOST = 'localhost';
+
+    expect(() => validateEnvironment('build')).not.toThrow();
+
+    delete process.env.DATABASE_USER;
+
+    expect(() => validateEnvironment('build')).toThrow(
+      "Environment variable 'DATABASE_USER' is undefined"
+    );
+
+    process.env.DATABASE_USER = 'user';
+    process.env.EMAIL_DRIVER = 'local';
+    process.env.EMAIL_FILEPATH = '/local/file';
+
+    expect(() => validateEnvironment('serve')).toThrow(
+      "Environment variable 'EMAIL_ADMIN_ADDRESS' is undefined"
+    );
+
+    process.env.EMAIL_ADMIN_ADDRESS = 'admin@example.com';
+
+    expect(() => validateEnvironment('serve')).not.toThrow();
+
+    delete process.env.DATABASE_HOST;
+
+    expect(() => validateEnvironment('serve')).toThrow(
+      "Environment variable 'DATABASE_HOST' is undefined"
+    );
+  });
+
+  it("only allows EMAIL_DRIVER to be assigned to 'aws' or 'local'", () => {
+    process.env.DATABASE_USER = 'user';
+    process.env.DATABASE_PASSWORD = 'supersecret';
+    process.env.DATABASE_NAME = 'database';
+    process.env.DATABASE_HOST = 'localhost';
+    process.env.EMAIL_DRIVER = 'invalid';
+    process.env.EMAIL_FILEPATH = '/local/file';
+    process.env.EMAIL_ADMIN_ADDRESS = 'admin@example.com';
+
+    expect(() => validateEnvironment('serve')).toThrow(
+      "Environment variable 'EMAIL_DRIVER' must be assigned to either "
+      + "'aws' or 'local'; invalid is not an allowed option"
+    );
+
+    process.env.EMAIL_DRIVER = 'aws';
+
+    expect(() => validateEnvironment('serve')).not.toThrow();
+
+    process.env.EMAIL_DRIVER = 'local';
+
+    expect(() => validateEnvironment('serve')).not.toThrow();
   });
 });

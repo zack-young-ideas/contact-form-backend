@@ -1,4 +1,4 @@
-import { sendAWSEmail, sendLocalEmail } from './drivers';
+import sendEmail from './drivers';
 
 interface MailObject {
   template: string;
@@ -14,11 +14,11 @@ interface AdminMailObject {
 
 const mail = {
   sendMail: async (mailObject: MailObject) => {
-    return;
+    sendEmail();
   },
 
   contactAdmin: (mailObject: AdminMailObject) => {
-    return;
+    sendEmail();
   },
 };
 

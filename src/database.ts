@@ -1,26 +1,6 @@
 import mysql, { ConnectionOptions } from 'mysql2';
 import ContactForm from './forms';
 
-const validateConnParams = () => {
-  /*
-  Ensures that the required connection parameters are available as
-  environment variables.
-  */
-  const requiredConnectionParams: {[index: string]:string | undefined} = {
-    DATABASE_USER: process.env.DATABASE_USER,
-    DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
-    DATABASE_NAME: process.env.DATABASE_NAME,
-    DATABASE_HOST: process.env.DATABASE_HOST,
-  };
-  for (const key in requiredConnectionParams) {
-    if (requiredConnectionParams[key] === undefined) {
-      throw Error(
-        `Environment variable '${key}' is undefined`
-      );
-    }
-  };
-}
-
 const getConnection = async () => {
   /*
   Connects to the MySQL database.
@@ -108,5 +88,5 @@ created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   }
 };
 
-export { getConnection, validateConnParams };
+export { getConnection };
 export default database;

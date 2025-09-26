@@ -121,7 +121,7 @@ const renderTemplate = async (
   return output;
 }
 
-const getEnvironment = (argument) => {
+const getEnvironment = (argument: string | undefined) => {
   /*
   Retrieves environment variables.
 
@@ -135,7 +135,7 @@ const getEnvironment = (argument) => {
   validateEnvironment() function is called to ensure the required
   environment variables are set.
   */
-  let envPath: string;
+  let envPath: string = '';
   if (argument !== undefined) {
     if (!argument.startsWith('--env=')) {
       throw Error(`Unknown command-line argument: ${argument}`);
@@ -146,18 +146,18 @@ const getEnvironment = (argument) => {
       }
     }
   } else {
-    let defaultPath: string = path.resolve(process.cwd(), '.env');
+    const defaultPath: string = path.resolve(process.cwd(), '.env');
     if (fs.existsSync(defaultPath)) {
       envPath = defaultPath;
     }
   }
-  if (envPath) {
+  if (envPath !== '') {
     dotenv.config({ path: envPath });
   }
-  validateEnvironment();
+  validateEnvironment('serve');
 }
 
-const validateEnvironment = () => {
+const validateEnvironment = (command: string = 'build') => {
   /*
   Ensures that the required environment variables are defined.
   Throws an error if any are missing.
@@ -167,27 +167,38 @@ const validateEnvironment = () => {
     DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
     DATABASE_NAME: process.env.DATABASE_NAME,
     DATABASE_HOST: process.env.DATABASE_HOST,
-    EMAIL_DRIVER: process.env.EMAIL_DRIVER,
-    EMAIL_ADMIN_ADDRESS: process.env.EMAIL_ADMIN_ADDRESS,
   };
-  // Ensure required variables are defined.
-  for (const key in requiredVariables) {
-    if (requiredVariables[key] === undefined) {
-      throw Error(
-        `Environment variable '${key}' is undefined`
-      )
+  if (command === 'serve') {
+    // If the command is 'serve', ensure the proper email-related
+    // variables are defined.
+    requiredVariables.EMAIL_DRIVER = process.env.EMAIL_DRIVER;
+    requiredVariables.EMAIL_ADMIN_ADDRESS = process.env.EMAIL_ADMIN_ADDRESS;
+    const emailVariables: {[index: string]:string | undefined} = {};
+    if (requiredVariables.EMAIL_DRIVER === 'local') {
+      emailVariables.EMAIL_FILEPATH = process.env.EMAIL_FILEPATH;
+    }
+    for (const key in emailVariables) {
+      if (emailVariables[key] === undefined) {
+        throw Error(
+          `Environment variable '${key}' is undefined`
+        )
+      }
+    }
+
+    // Ensure EMAIL_DRIVER is assigned to either 'local' or 'aws'.
+    const driver: string | undefined = requiredVariables.EMAIL_DRIVER;
+    if (typeof driver === 'string' && ['aws', 'local'].indexOf(driver) < 0) {
+      const errorMessage = "Environment variable 'EMAIL_DRIVER' must be "
+                         + "assigned to either 'aws' or 'local'; "
+                         + `${requiredVariables.EMAIL_DRIVER} is not an `
+                         + 'allowed option'
+      throw Error(errorMessage);
     }
   }
-  // Ensure the proper email-related variables are defined.
-  const emailVariables: {[index: string]:string | undefined} = {};
-  if (requiredVariables.EMAIL_DRIVER === 'local') {
-    emailVariables.EMAIL_FILEPATH = process.env.EMAIL_FILEPATH;
-  }
-  if (requiredVariables.EMAIL_DRIVER === 'aws') {
-    // Define variables required to use AWS SES.
-  }
-  for (const key in emailVariables) {
-    if (emailVariables[key] === undefined) {
+
+  // Ensure all required variables are defined.
+  for (const key in requiredVariables) {
+    if (requiredVariables[key] === undefined) {
       throw Error(
         `Environment variable '${key}' is undefined`
       )
