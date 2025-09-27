@@ -9,7 +9,6 @@ There are two functions defined in this file:
 import fs from 'fs';
 import path from 'path';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import { MailObject } from './types';
 import { getRandomString } from '../utils';
 
 const sesClient = new SESClient({ region: 'us-east-1' });
@@ -69,19 +68,18 @@ const sendLocalEmail = async (
   /*
   Stores emails as files on the local filesystem.
   */
-//  await fs.mkdir(process.env.EMAIL_FILEPATH, { recursive: true }, (err) => {
-//    if (err) {
-//      throw Error('Error creating directory:', err);
-//    }
-//  });
+  await fs.mkdir(process.env.EMAIL_FILEPATH, { recursive: true }, (err) => {
+    if (err) {
+      throw Error('Error creating directory:', err);
+    }
+  });
   const timestamp = Date.now().toString(36);
   const randomString = getRandomString();
-//  const filename = path.resolve(
-//    process.env.EMAIL_FILEPATH, 
-//    timestamp + randomString
-//  );
+  const filename = path.resolve(
+    process.env.EMAIL_FILEPATH, 
+    timestamp + randomString
+  );
 //  await fs.writeFile(filename, 
-  return;
 }
 
 const sendEmail = async (

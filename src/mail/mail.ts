@@ -32,7 +32,7 @@ const sendAcknowledgementEmail = async (mailObject: MailObject) => {
   );
 
   await sendEmail(mailObject.recipient, htmlContent, textContent);
-},
+};
 
 const sendAdminEmail = async (mailObject: MailObject) => {
   let templateDir: string = '';
@@ -63,6 +63,6 @@ const sendAdminEmail = async (mailObject: MailObject) => {
   );
 
   await sendEmail(mailObject.recipient, htmlContent, textContent);
-},
+};
 
 export { sendAcknowledgementEmail, sendAdminEmail };
