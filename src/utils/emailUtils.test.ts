@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import fs from 'fs';
 
 import { renderTemplate } from './emailUtils';

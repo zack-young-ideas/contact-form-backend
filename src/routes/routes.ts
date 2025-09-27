@@ -27,11 +27,27 @@ const postHandler = async (req: Request, res: Response) => {
   } else {
     try {
       await database.createContact(form);
-      await sendAcknowledgementEmail(form.cleanedData.email);
-      await sendAdminEmail(form.cleanedData);
-    } catch (err) {
+      await sendAcknowledgementEmail({
+        recipient: form.cleanedData.email,
+        template: 'acknowledgement',
+        variables: {
+          firstName: form.cleanedData.firstName,
+        },
+      });
+      if (process.env.EMAIL_ADMIN_ADDRESS !== undefined) {
+        await sendAdminEmail({
+          recipient: process.env.EMAIL_ADMIN_ADDRESS,
+          template: 'admin',
+          variables: form.cleanedData,
+        });
+      }
+    } catch (err: unknown) {
       status = 500;
-      responseData.errors = [err.message];
+      if (err instanceof Error) {
+        responseData.errors = [err.message];
+      } else {
+        responseData.errors = ['Unknown error'];
+      }
     }
   }
   res.status(status).json(responseData);

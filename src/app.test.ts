@@ -1,7 +1,9 @@
 import request from 'supertest';
 
 import app from './app';
+// eslint-disable-next-line
 import database from './database';
+// eslint-disable-next-line
 import { sendAcknowledgementEmail, sendAdminEmail } from '../mail';
 
 jest.mock('./database');
