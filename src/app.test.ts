@@ -1,6 +1,7 @@
 import request from 'supertest';
 
 import app from './app';
+import { getRandomString, maskCipherToken } from './utils';
 // eslint-disable-next-line
 import database from './database';
 // eslint-disable-next-line
@@ -34,24 +35,62 @@ describe('/csrf GET', () => {
 
 describe('/contact POST', () => {
   it('should return 200 OK response', async () => {
+    const csrfSecret = getRandomString();
     const response = await request(app).post('/contact').send({
       firstName: 'John',
       lastName: 'Smith',
       email: 'jsmith@example.com',
       phone: '+12345678901',
       message: 'Hello',
+    }).set({
+      'Cookie': `csrftoken=${csrfSecret}`,
+      'X-CSRF-Token': maskCipherToken(csrfSecret),
     });
 
     expect(response.statusCode).toBe(200);
   });
 
+  it('returns 400 if CSRF cookie is missing', async () => {
+    const csrfSecret = getRandomString();
+    const response = await request(app).post('/contact').send({
+      firstName: 'John',
+      lastName: 'Smith',
+      email: 'jsmith@example.com',
+      phone: '+12345678901',
+      message: 'Hello',
+    }).set({
+      'X-CSRF-Token': maskCipherToken(csrfSecret),
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it('returns 400 if CSRF token is missing', async () => {
+    const csrfSecret = getRandomString();
+    const response = await request(app).post('/contact').send({
+      firstName: 'John',
+      lastName: 'Smith',
+      email: 'jsmith@example.com',
+      phone: '+12345678901',
+      message: 'Hello',
+    }).set({
+      'Cookie': `csrftoken=${csrfSecret}`,
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
   it('requires firstName, lastName, and email', async () => {
+    const csrfSecret = getRandomString();
     const response = await request(app).post('/contact').send({
       firstName: '',
       lastName: '',
       email: '',
       phone: '+12345678901',
       message: 'Hello',
+    }).set({
+      'Cookie': `csrftoken=${csrfSecret}`,
+      'X-CSRF-Token': maskCipherToken(csrfSecret),
     });
 
     expect(response.statusCode).toBe(400);
