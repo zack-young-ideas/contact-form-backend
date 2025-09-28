@@ -1,9 +1,13 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
+import validateCsrf from './middleware';
 import { getHandler, postHandler } from './routes';
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
+app.use(validateCsrf);
 
 app.disable('x-powered-by');
 
