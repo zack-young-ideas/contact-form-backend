@@ -37,7 +37,7 @@ const getEnvironment = (argument: string | undefined) => {
     }
   }
   if (envPath !== '') {
-    dotenv.config({ path: envPath });
+    dotenv.config({ path: envPath, quiet: true });
   }
   validateEnvironment('serve');
 }
@@ -59,6 +59,7 @@ const validateEnvironment = (command: string = 'build') => {
     requiredVariables.EMAIL_DRIVER = process.env.EMAIL_DRIVER;
     requiredVariables.EMAIL_TEMPLATE_DIR = process.env.EMAIL_TEMPLATE_DIR;
     requiredVariables.EMAIL_ADMIN_ADDRESS = process.env.EMAIL_ADMIN_ADDRESS;
+    requiredVariables.EMAIL_FROM_ADDRESS = process.env.EMAIL_FROM_ADDRESS;
     const emailVariables: {[index: string]:string | undefined} = {};
     if (requiredVariables.EMAIL_DRIVER === 'local') {
       emailVariables.EMAIL_FILEPATH = process.env.EMAIL_FILEPATH;

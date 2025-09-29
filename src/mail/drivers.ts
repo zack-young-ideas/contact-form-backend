@@ -9,7 +9,7 @@ There are two functions defined in this file:
 import fs from 'fs';
 import path from 'path';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import { getRandomString } from '../utils';
+import { getRandomString, renderEmail } from '../utils';
 
 const sesClient = new SESClient({ region: 'us-east-1' });
 
@@ -68,18 +68,40 @@ const sendLocalEmail = async (
   /*
   Stores emails as files on the local filesystem.
   */
-  await fs.mkdir(process.env.EMAIL_FILEPATH, { recursive: true }, (err) => {
-    if (err) {
-      throw Error('Error creating directory:', err);
+  const filePath: string | undefined = process.env.EMAIL_FILEPATH;
+  const fromEmail: string | undefined = process.env.EMAIL_FROM_ADDRESS;
+  if ((filePath !== undefined) && (fromEmail !== undefined)) {
+    await fs.mkdir(filePath, { recursive: true }, (err) => {
+      if (err) {
+        throw Error(`Error creating directory: ${err.message}`);
+      }
+    });
+    const timestamp = Date.now().toString(36);
+    const randomString = getRandomString();
+    const filename = path.resolve(filePath, timestamp + randomString);
+
+    // Write the email to the local filesystem.
+    const content = renderEmail(
+      recipient,
+      fromEmail,
+      'Contact form submission',
+      htmlContent,
+      textContent,
+    );
+    await fs.writeFile(filename, content, (err) => {
+      if (err) {
+        console.error(`Error writing file: ${err.message}`);
+      }
+    });
+  } else {
+    let envVar: string = 'EMAIL_FROM_ADDRESS';
+    if (filePath === undefined) {
+      envVar = 'EMAIL_FILEPATH';
     }
-  });
-  const timestamp = Date.now().toString(36);
-  const randomString = getRandomString();
-  const filename = path.resolve(
-    process.env.EMAIL_FILEPATH, 
-    timestamp + randomString
-  );
-//  await fs.writeFile(filename, 
+    throw Error(
+      `Environment variable ${envVar} must be assigned a value`
+    );
+  }
 }
 
 const sendEmail = async (

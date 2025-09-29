@@ -28,6 +28,7 @@ describe('getEnvironment', () => {
     process.env.EMAIL_FILEPATH = '/local/file';
     process.env.EMAIL_TEMPLATE_DIR = 'local/file';
     process.env.EMAIL_ADMIN_ADDRESS = 'admin@example.com';
+    process.env.EMAIL_FROM_ADDRESS = 'noreply@example.com';
   });
 
   afterAll(() => {
@@ -43,6 +44,7 @@ describe('getEnvironment', () => {
     delete process.env.EMAIL_FILEPATH;
     delete process.env.EMAIL_TEMPLATE_DIR;
     delete process.env.EMAIL_ADMIN_ADDRESS;
+    delete process.env.EMAIL_FROM_ADDRESS;
   });
 
   it('should use .env file specified in command-line argument', () => {
@@ -99,6 +101,7 @@ describe('validateEnvironment', () => {
     process.env.EMAIL_DRIVER = 'local';
     process.env.EMAIL_FILEPATH = '/local/file';
     process.env.EMAIL_TEMPLATE_DIR = '/local/file';
+    process.env.EMAIL_FROM_ADDRESS = 'noreply@example.com';
 
     expect(() => validateEnvironment('serve')).toThrow(
       "Environment variable 'EMAIL_ADMIN_ADDRESS' is undefined"
@@ -124,6 +127,7 @@ describe('validateEnvironment', () => {
     process.env.EMAIL_FILEPATH = '/local/file';
     process.env.EMAIL_TEMPLATE_DIR = '/local/file';
     process.env.EMAIL_ADMIN_ADDRESS = 'admin@example.com';
+    process.env.EMAIL_FROM_ADDRESS = 'noreply@example.com';
 
     expect(() => validateEnvironment('serve')).toThrow(
       "Environment variable 'EMAIL_DRIVER' must be assigned to either "
