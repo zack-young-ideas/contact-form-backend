@@ -4,14 +4,14 @@ import fs from 'fs';
 import { renderTemplate } from './emailUtils';
 
 jest.mock('fs', () => ({
-  readFile: (filePath, encoding, callback) => {
+  readFileSync: () => {
     const data = '<!DOCTYPE html>\n'
                + '<body>\n'
                + '  <h1>{{ title }}</h1>\n'
                + '  <p>The quick brown {{ variable1 }} jumps over the '
                + 'lazy {{ variable2 }}</p>\n'
                + '</body>\n';
-    callback(null, data);
+    return data;
   },
 }));
 

@@ -3,5 +3,5 @@ export {
   maskCipherToken,
   unmaskCipherToken
 } from './csrfUtils';
-export { renderTemplate } from './emailUtils';
+export { renderEmail, renderTemplate } from './emailUtils';
 export { getEnvironment } from './envUtils';
