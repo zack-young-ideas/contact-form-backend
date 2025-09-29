@@ -53,7 +53,10 @@ describe('getEnvironment', () => {
     getEnvironment('--env=.stuff');
 
     expect(dotenv.config).toHaveBeenCalledTimes(1);
-    expect(dotenv.config).toHaveBeenCalledWith({ path: '.stuff' });
+    expect(dotenv.config).toHaveBeenCalledWith({
+      path: '.stuff',
+      quiet: true,
+    });
   });
 
   it('should use default .env file if no argument is specified', () => {
@@ -62,9 +65,10 @@ describe('getEnvironment', () => {
     getEnvironment();
 
     expect(dotenv.config).toHaveBeenCalledTimes(1);
-    expect(dotenv.config).toHaveBeenCalledWith(
-      { path: path.resolve(process.cwd(), '.env') }
-    );
+    expect(dotenv.config).toHaveBeenCalledWith({
+      path: path.resolve(process.cwd(), '.env'),
+      quiet: true,
+    });
   });
 
   it('should throw error if unknown argument is passed', () => {
