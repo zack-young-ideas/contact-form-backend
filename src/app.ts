@@ -11,9 +11,9 @@ app.use(validateCsrf);
 
 app.disable('x-powered-by');
 
-app.get('/csrf', getHandler);
+app.get('/api/csrf', getHandler);
 
-app.post('/contact', postHandler);
+app.post('/api/contact', postHandler);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });

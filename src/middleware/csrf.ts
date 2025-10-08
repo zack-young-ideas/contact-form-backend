@@ -6,7 +6,7 @@ import { Request, Response, NextFunction } from 'express';
 import { unmaskCipherToken } from '../utils';
 
 const validateCsrf = (req: Request, res: Response, next: NextFunction) => {
-  if (req.path === '/contact') {
+  if (req.path === '/api/contact') {
     const csrfSecret = req.cookies.csrftoken;
     const csrfToken = req.get('X-CSRF-Token');
     if (csrfToken !== undefined) {
