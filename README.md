@@ -101,3 +101,11 @@ npm run start
 ```
 
 The `npm run build` and the `npm run start` commands both accept an optional argument that specifies an .env file to use. For instance, `npm run build -- --env=.env` and `npm run start -- --env=.env`.
+
+## Author
+
+Zack Young
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
