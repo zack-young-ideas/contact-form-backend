@@ -1,0 +1,5 @@
+New Contact Request
+
+{{ firstName }} {{ lastName }} has requested to be contacted. Their email is {{ email }}. They've left the following message:
+
+{{ message }}

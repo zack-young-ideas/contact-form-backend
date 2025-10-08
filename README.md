@@ -14,10 +14,10 @@ A REST API that accepts POST requests to submit contact information.
 This API is meant to serve as the backend for a front-end web application that displays a contact form to users. It works best when used with the React contact form app at [contact-form](https://github.com/zack-young-ideas/contact-form).
 
 There are two API endpoints defined by this app:
-- **GET** /api/csrf - returns a secret value and a token that are used to prevent cross-site request forgery attempts
-- **POST** /api/contact - accepts contact form info; must include the secret value and token provided in GET requests to /api/csrf
+- **GET /api/csrf** - returns a secret value and a token that are used to prevent cross-site request forgery attempts
+- **POST /api/contact** - accepts contact form info; must include the secret value and token provided in GET requests to /api/csrf
 
-A MySQL database is required for storing contact information from users. When the `build` command is run, a new table is created in the database that will store the contact info submitted by each user.
+A MySQL database is required for storing contact information from users. When the `npm run build` command is run, a new table is created in the database that will store the contact info submitted by each user.
 
 This API is expected to be run on an AWS EC2 instance with permission to send emails via AWS Simple Email Service, but this is not required. The API comes with two email drivers, one that sends emails via AWS SES, and another that simply writes emails to local files on disk. 
 
@@ -27,15 +27,12 @@ When POST requests are sent to the /api/contact endpoint, an acknowledgement ema
 
 Before building and running the contact form API, you must create a new MySQL database. There must be a user that has permission to create a new table and insert data into this table.
 
-Furthermore, Node.js must be installed on your system. If your intention is to send emails using AWS, you will need to run the API on an EC2 instance, verify a domain name or email address identity with AWS SES, and assign a role to the EC2 instance granting it permission to send emails. There are no SMTP credentials required. The API assumes the EC2 instance it is installed on has a role that enables sending emails.
+Furthermore, Node.js must be installed on your system. If your intention is to send emails using AWS, you will need to run the API on an EC2 instance, verify a domain name or email address identity with AWS SES, and assign a role to the EC2 instance granting it permission to send emails. There are no SMTP credentials required. The API assumes that the EC2 instance has a role enabling it to send emails.
 
 To get MySQL set up, run the following commands:
 
 ```sql
 CREATE DATABASE IF NOT EXISTS contact_form;
-```
-
-```sql
 CREATE USER 'contact_form_admin'@'localhost' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON contact_form.* TO 'contact_form_admin'@'localhost';
 FLUSH PRIVILEGES;
@@ -77,6 +74,21 @@ The API requires several environment variables to be defined. These may be part 
 - **DATABASE_CHARSET** - the charset used to connect to the MySQL server
 - **DATABASE_PORT** - specifies a port to use when connecting to the MySQL server
 - **DATABASE_TIMEZONE** - the timezone to use when connecting to MySQL
+
+## Email Templates
+
+At least four email template files must exist within the directory specified by the EMAIL_TEMPLATE_DIR environment variable: acknowledgement.txt, acknowledgement.html, admin.txt, and admin.html. These templates are populated with information in the POST requests to the /api/contact endpoint. The rendered templates are then included in emails sent to the user and the site admin.
+
+Example template files can be found in the templates directory. Notice that variables are delimited using double curly braces, such as `{{ variable_1 }}`.
+
+The acknowledgement.txt and acknowledgement.html template files must define the following variables:
+- **firstName** - the first name submitted in the POST request to /api/contact
+
+The admin.txt and admin.html template files must define the following variables:
+- **firstName** - the first name submitted in the POST request to /api/contact
+- **lastName** - the last name submitted in the POST request to /api/contact
+- **email** - the email address submitted in the POST request to /api/contact
+- **message** - the message submitted by the user in the POST request to /api/contact
 
 ## Installation
 
