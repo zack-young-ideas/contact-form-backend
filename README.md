@@ -14,8 +14,8 @@ A REST API that accepts POST requests to submit contact information.
 This API is meant to serve as the backend for a front-end web application that displays a contact form to users. It works best when used with the React contact form app at [contact-form](https://github.com/zack-young-ideas/contact-form).
 
 There are two API endpoints defined by this app:
-- **GET /api/csrf** - returns a secret value and a token that are used to prevent cross-site request forgery attempts
-- **POST /api/contact** - accepts contact form info; must include the secret value and token provided in GET requests to /api/csrf
+- **GET** /api/csrf - returns a secret value and a token that are used to prevent cross-site request forgery attempts
+- **POST** /api/contact - accepts contact form info; must include the secret value and token provided in GET requests to /api/csrf
 
 A MySQL database is required for storing contact information from users. When the `build` command is run, a new table is created in the database that will store the contact info submitted by each user.
 
