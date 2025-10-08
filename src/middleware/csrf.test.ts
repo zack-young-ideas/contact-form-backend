@@ -8,7 +8,7 @@ describe('validateCsrf', () => {
     req = {
       cookies: { csrftoken: csrfSecret },
       get: () => maskCipherToken(csrfSecret),
-      path: '/contact',
+      path: '/api/contact',
     };
     res = {};
 
@@ -24,7 +24,7 @@ describe('validateCsrf', () => {
     req = {
       cookies: { csrftoken: 'random' },
       get: () => 'someOtherRandomValue',
-      path: '/contact',
+      path: '/api/contact',
     };
     res = {
       status: jest.fn(() => ({

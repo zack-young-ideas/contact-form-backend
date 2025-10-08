@@ -13,7 +13,13 @@ import { getRandomString, renderEmail } from '../utils';
 
 const sesClient = new SESClient({ region: 'us-east-1' });
 
-const createSendEmailCommand = (toAddress: string, fromAddress: string) => {
+const createSendEmailCommand = (
+  toAddress: string,
+  fromAddress: string,
+  subject: string,
+  htmlContent: string,
+  textContent: string,
+) => {
   return new SendEmailCommand({
     Destination: {
       CcAddresses: [],
@@ -23,16 +29,16 @@ const createSendEmailCommand = (toAddress: string, fromAddress: string) => {
       Body: {
         Html: {
           Charset: 'UTF-8',
-          Data: 'HTML_FORMAT_BODY',
+          Data: htmlContent,
         },
         Text: {
           Charset: 'UTF-8',
-          Data: 'TEXT_FORMAT_BODY',
+          Data: textContent,
         },
       },
       Subject: {
         Charset: 'UTF-8',
-        Data: 'EMAIL_SUBJECT',
+        Data: subject,
       },
     },
     Source: fromAddress,
@@ -48,15 +54,24 @@ const sendAWSEmail = async (
   /*
   Sends emails using AWS Simple Email Service.
   */
-  const sendEmailCommand = createSendEmailCommand(
-    'recipient@example.com',
-    'sender@example.com'
-  );
-
-  try {
-    return await sesClient.send(sendEmailCommand);
-  } catch (err) {
-    console.error(err);
+  const fromEmail: string | undefined = process.env.EMAIL_FROM_ADDRESS;
+  if (fromEmail !== undefined) {
+    const sendEmailCommand = createSendEmailCommand(
+      recipient,
+      fromEmail,
+      'Contact form submission',
+      htmlContent,
+      textContent
+    );
+    try {
+      return await sesClient.send(sendEmailCommand);
+    } catch (err) {
+      console.error(err);
+    }
+  } else {
+    throw Error(
+      `Environment variable EMAIL_FROM_ADDRESS must be assigned a value`
+    );
   }
 }
 

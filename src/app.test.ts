@@ -10,22 +10,22 @@ import { sendAcknowledgementEmail, sendAdminEmail } from '../mail';
 jest.mock('./database');
 jest.mock('./mail');
 
-describe('/csrf GET', () => {
+describe('/api/csrf GET', () => {
   it('should return 200 OK response', async () => {
-    const response = await request(app).get('/csrf');
+    const response = await request(app).get('/api/csrf');
 
     expect(response.statusCode).toBe(200);
   });
 
   it('response should contain CSRF token in custom header', async () => {
-    const response = await request(app).get('/csrf');
+    const response = await request(app).get('/api/csrf');
     const headers = response.headers;
 
     expect(headers['x-csrf-token']).toMatch(/^[a-zA-Z0-9]{64}$/);
   });
 
   it('response should set cookie containing secret', async () => {
-    const response = await request(app).get('/csrf');
+    const response = await request(app).get('/api/csrf');
     const setCookieHeader = response.headers['set-cookie'];
 
     expect(setCookieHeader).toBeDefined();
@@ -33,10 +33,10 @@ describe('/csrf GET', () => {
   });
 });
 
-describe('/contact POST', () => {
+describe('/api/contact POST', () => {
   it('should return 200 OK response', async () => {
     const csrfSecret = getRandomString();
-    const response = await request(app).post('/contact').send({
+    const response = await request(app).post('/api/contact').send({
       firstName: 'John',
       lastName: 'Smith',
       email: 'jsmith@example.com',
@@ -52,7 +52,7 @@ describe('/contact POST', () => {
 
   it('returns 400 if CSRF cookie is missing', async () => {
     const csrfSecret = getRandomString();
-    const response = await request(app).post('/contact').send({
+    const response = await request(app).post('/api/contact').send({
       firstName: 'John',
       lastName: 'Smith',
       email: 'jsmith@example.com',
@@ -67,7 +67,7 @@ describe('/contact POST', () => {
 
   it('returns 400 if CSRF token is missing', async () => {
     const csrfSecret = getRandomString();
-    const response = await request(app).post('/contact').send({
+    const response = await request(app).post('/api/contact').send({
       firstName: 'John',
       lastName: 'Smith',
       email: 'jsmith@example.com',
@@ -82,7 +82,7 @@ describe('/contact POST', () => {
 
   it('requires firstName, lastName, and email', async () => {
     const csrfSecret = getRandomString();
-    const response = await request(app).post('/contact').send({
+    const response = await request(app).post('/api/contact').send({
       firstName: '',
       lastName: '',
       email: '',
