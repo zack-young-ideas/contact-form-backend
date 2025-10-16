@@ -1,6 +1,8 @@
 # Contact Form Backend
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+![Node.js](https://img.shields.io/badge/node-%3E%3D20.0-brightgreen)
+![AWS SES](https://img.shields.io/badge/AWS_SES-supported-orange)
 
 A REST API that accepts POST requests to submit contact information.
 
@@ -17,17 +19,19 @@ There are two API endpoints defined by this app:
 - **GET /api/csrf** - returns a secret value and a token that are used to prevent cross-site request forgery attempts
 - **POST /api/contact** - accepts contact form info; must include the secret value and token provided in GET requests to /api/csrf
 
-A MySQL database is required for storing contact information from users. When the `npm run build` command is run, a new table is created in the database that will store the contact info submitted by each user.
+A MySQL database is required for storing contact information from users. When the `npm run build` command is run, a new table is created in the database that will store contact info submitted by users.
 
-This API is expected to be run on an AWS EC2 instance with permission to send emails via AWS Simple Email Service, but this is not required. The API comes with two email drivers, one that sends emails via AWS SES, and another that simply writes emails to local files on disk. 
+The API is designed to run on AWS EC2 with SES permissions, but can also be run using the 'local' email driver that writes emails to local files on disk.
 
-When POST requests are sent to the /api/contact endpoint, an acknowledgement email is sent to the email address included in the POST request. A second email is sent to the admin of the site. These emails are composed using email template files that must include specific variables described below.
+When POST requests are sent to the /api/contact endpoint, an acknowledgement email is sent to the email address included in the POST request. A second email is sent to the admin of the site. These emails are composed using email template files that must include specific template variables described below.
 
 ## Pre-Installation
 
-Before building and running the contact form API, you must create a new MySQL database. There must be a user that has permission to create a new table and insert data into this table.
+Before building and running the contact form API, you must create a new MySQL database and a user that has permission to create tables.
 
-Furthermore, Node.js must be installed on your system. If your intention is to send emails using AWS, you will need to run the API on an EC2 instance, verify a domain name or email address identity with AWS SES, and assign a role to the EC2 instance granting it permission to send emails. There are no SMTP credentials required. The API assumes that the EC2 instance has a role enabling it to send emails.
+Furthermore, Node.js must be installed on your system. If you intend to send emails using AWS, you will need to run the API on an EC2 instance, verify a domain name or email address identity with AWS SES, and assign a role to the EC2 instance granting it permission to send emails. There are no SMTP credentials required.
+
+### Database
 
 To get MySQL set up, run the following commands:
 
@@ -38,9 +42,11 @@ GRANT ALL PRIVILEGES ON contact_form.* TO 'contact_form_admin'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-Run `mysql -u contact_form_admin -p` to test that the user you've created is able to connect to the MySQL database properly.
+Run `mysql -u contact_form_admin -p` to test that the user you've created is able to connect to MySQL.
 
-If you intend to use AWS Simple Email Service to send emails, create a new role using AWS IAM and attach the following policy to it:
+### AWS Setup
+
+If you intend to use AWS Simple Email Service to send emails, create a new role using AWS IAM, attach the following policy to it, and assign the role to an EC2 instance:
 
 ```json
 {
@@ -77,9 +83,9 @@ The API requires several environment variables to be defined. These may be part 
 
 ## Email Templates
 
-At least four email template files must exist within the directory specified by the EMAIL_TEMPLATE_DIR environment variable: acknowledgement.txt, acknowledgement.html, admin.txt, and admin.html. These templates are populated with information in the POST requests to the /api/contact endpoint. The rendered templates are then included in emails sent to the user and the site admin.
+At least four email template files must exist within the directory specified by the EMAIL_TEMPLATE_DIR environment variable: acknowledgement.txt, acknowledgement.html, admin.txt, and admin.html. These templates are rendered with variables provided in the POST request to /api/contact. The rendered templates are then included in emails sent to the user and the site admin.
 
-Example template files can be found in the templates directory. Notice that variables are delimited using double curly braces, such as `{{ variable_1 }}`.
+Example template files can be found in the templates directory. Template variables must be delimited using double curly braces, such as `{{ variable_1 }}`.
 
 The acknowledgement.txt and acknowledgement.html template files must define the following variables:
 - **firstName** - the first name submitted in the POST request to /api/contact
