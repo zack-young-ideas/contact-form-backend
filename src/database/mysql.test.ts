@@ -1,4 +1,4 @@
-import { getConnection } from './database';
+import { getConnection } from './mysql';
 import mysql from 'mysql2';
 
 jest.mock('mysql2', () => ({
